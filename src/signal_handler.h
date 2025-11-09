@@ -23,6 +23,9 @@ extern "C" {
 void my_signal_handler(int signum);
 void register_signal_handler(mystuff_t *mystuff);
 
+void my_shorter_handler(int signum);
+void register_shorter_handler(mystuff_t *mystuff);
+
 #ifdef __cplusplus
 }
 #endif

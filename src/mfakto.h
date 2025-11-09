@@ -52,5 +52,4 @@ int kernel_possible(int kernel, mystuff_t *mystuff);
 int run_kernel(cl_kernel l_kernel, cl_uint exp, int stream, cl_mem res);
 int run_mod_kernel(cl_ulong hi, cl_ulong lo, cl_ulong q, cl_float qr, cl_ulong *res_hi, cl_ulong *res_lo);
 
-
 #endif  /* #ifndef mfakto_H_ */

@@ -58,6 +58,8 @@ void print_help(char *string)
   printf("  -st2                   self-test using all possible kernels\n");
   printf("\n");
   printf("options for debugging purposes\n");
+  printf("  -x | --nonexclusive    allow multiple instances of mfakto to run simultaneously\n");
+  printf("                                in the same directory\n");
   printf("  --timertest            test timer functions\n");
   printf("  --sleeptest            test sleep functions\n");
   printf("  --perftest [n]         run performance test <n> times (default: 10)\n");

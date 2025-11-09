@@ -114,7 +114,8 @@ enum EXIT_VALUES
   ERR_INIT,
   ERR_MEM,
   ERR_SELFTEST,
-  ERR_RUNTIME
+  ERR_RUNTIME,
+  ERR_PIDLOCK
 };
 
 enum GPUKernels
@@ -238,6 +239,8 @@ typedef struct _stats_t
   char     kernelname[32];
 }stats_t;
 
+#define FLAG_NONEXCLUSIVE 0x01
+
 typedef struct _mystuff_t
 {
   cl_event copy_events[NUM_STREAMS_MAX];
@@ -315,8 +318,9 @@ typedef struct _mystuff_t
   char CompileOptions[151];    /* additional compile options */
   char binfile[51];            /* compiled kernels file to use, empty if not desired */
 
-  cl_uint override_v;          /* override INI file when setting verbosity */
-
+  cl_uint       override_v;          /* override INI file when setting verbosity */
+  cl_uint       flags;
+  const char   *pidlock;
 }mystuff_t;		       /* FIXME: proper name needed */
 
 typedef struct

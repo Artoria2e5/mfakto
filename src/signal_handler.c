@@ -26,8 +26,7 @@ along with mfaktc (mfakto).  If not, see <http://www.gnu.org/licenses/>.
 #include "compatibility.h"
 
 static mystuff_t *signal_handler_mystuff;
-
-
+extern void exit(int exit_code);
 
 void my_signal_handler(int signum)
 {
@@ -46,11 +45,19 @@ invoked so we just register it again. */
   if(signal_handler_mystuff->quit > 1)
   {
     printf("mfakto will exit NOW!\n");
-    exit(1);
+    exit(128 + signum);
   }
-  signum++; /* useless but avoids warning about unused variable... */
 }
 
+void my_shorter_handler(int signum)
+{
+#ifdef _MSC_VER
+/* Windows resets the signal handler to the default action once it is
+invoked so we just register it again. */
+  signal(signum, &my_shorter_handler);
+#endif
+  exit(128 + signum);
+}
 
 void register_signal_handler(mystuff_t *mystuff)
 {
@@ -58,3 +65,11 @@ void register_signal_handler(mystuff_t *mystuff)
   signal(SIGINT, &my_signal_handler);
   signal(SIGTERM, &my_signal_handler);
 }
+
+void register_shorter_handler(mystuff_t *mystuff)
+{
+  signal_handler_mystuff = mystuff;
+  signal(SIGINT, &my_shorter_handler);
+  signal(SIGTERM, &my_shorter_handler);
+}
+

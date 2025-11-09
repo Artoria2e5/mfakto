@@ -23,8 +23,14 @@ extern "C"
 #endif
 
 int file_exists (char	*filename);
+
+/* Returns and accepts the fopen()'ed handle */
 FILE *fopen_and_lock(const char *path, const char *mode);
 int unlock_and_fclose(FILE *f);
+
+/* Returns and accepts lock filename */
+const char* just_lock(const char *path, int retries);
+int just_unlock(const char *lock_filename);
 
 #ifdef __cplusplus
 }

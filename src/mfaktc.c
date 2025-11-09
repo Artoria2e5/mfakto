@@ -1106,6 +1106,14 @@ RET_ERROR we might have a serios problem
   return retval;
 }
 
+void atexit_pid()
+{
+  if (mystuff.pidlock)
+  {
+    just_unlock(mystuff.pidlock);
+  }
+}
+
 int main(int argc, char **argv)
 {
   unsigned long exponent = 1;
@@ -1290,6 +1298,10 @@ int main(int argc, char **argv)
     {
       mystuff.force_rebuild = 1;
     }
+    else if((!strcmp((char*)"-x", argv[i])) || (!strcmp((char*)"--nonexclusive", argv[i])))
+    {
+      mystuff.flags |= FLAG_NONEXCLUSIVE;
+    }
     else
     {
       fprintf(stderr, "ERROR: unknown option '%s'\n", argv[i]);
@@ -1308,6 +1320,26 @@ int main(int argc, char **argv)
   }
 
   read_config(&mystuff);
+  
+  if (mystuff.flags & FLAG_NONEXCLUSIVE)
+  {
+    logprintf(&mystuff, "INFO: non-exclusive mode enabled\n");
+  }
+  else
+  {
+    mystuff.pidlock = just_lock("mfakto", 0);
+    if (mystuff.pidlock == NULL) /* Should be unreachable */
+    {
+      logprintf(&mystuff, "ERROR: another instance of mfakto is already "
+               "running in the same directory (use -x or override)\n");
+      logprintf(&mystuff, "It's also possible that mfakto did not shut down "
+               "properly last time and left a stale lock file.  Delete "
+               "mfakto.lck after making sure the stored PID is not running.\n");
+      return ERR_PIDLOCK;
+    }
+    atexit(atexit_pid);
+  }
+  register_shorter_handler(&mystuff);
 
 /* print current configuration */
   if(mystuff.verbosity >= 1)
@@ -1535,7 +1567,7 @@ int main(int argc, char **argv)
       printf ("ERROR: self-test failed, exiting.\n");
       cleanup_CL();
       sieve_free();
-      return ERR_SELFTEST;
+      return ERR_OK;
     }
   }
 
