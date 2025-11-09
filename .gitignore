@@ -9,6 +9,11 @@ src/depend
 *.bc
 *.i
 *.ii
+*.s
+*.ltrans*
+*.lto_wrapper_args
+*.res
+*.wpa*
 
 # binaries
 mfakto
